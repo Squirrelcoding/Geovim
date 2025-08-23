@@ -4,7 +4,7 @@ local geovim = require("geovim")
 
 -- Subcommand: say hello
 vim.api.nvim_create_user_command(
-    "GeoVimHello",
+    "GeoVimGetCoordinates",
     function()
 		-- Synchronous API call
 		local handle = io.popen('curl -s "https://api.github.com/repos/neovim/neovim"')
@@ -19,9 +19,26 @@ vim.api.nvim_create_user_command(
 
 -- Subcommand: print a dummy coordinate
 vim.api.nvim_create_user_command(
-    "GeoVimDummyCoords",
-    function()
-        geovim.paste_coordinates(44.9778, -93.2650)
+    "GeoVimReverseGeoCode",
+    function(opts)
+        local lat = opts.fargs[1]
+        local lon = opts.fargs[2]
+        print(geovim.reverse_geocode(lon, lat))
+    end,
+    { 
+        desc = "Insert a dummy coordinate at the cursor",
+        nargs = "+"  -- This tells Vim to expect exactly 2 arguments
+    }
+)
+
+vim.api.nvim_create_user_command(
+    "GeovimGeocode",
+    function(opts)
+		local query = opts.args
+		local lon, lat = geovim.geocode(query)
+		print(lon)
+		print(lat)
+        -- geovim.geocode(geovim.geocode(query))
     end,
     { desc = "Insert a dummy coordinate at the cursor" }
 )
