@@ -1,13 +1,12 @@
--- lua/geovim/init.lua
 local M = {}
 
--- Example subcommand 1: Print Hello
+-- Reverse geocode
 function M.reverse_geocode(lat, lon)
 	local url = "https://nominatim.openstreetmap.org/search?q=Minneapolis&format=json"
 	local result = vim.fn.system({ "curl", "-s", url })
 	local decoded = vim.fn.json_decode(result)
 
-	print(vim.inspect(decoded))  -- show the response
+	print(vim.inspect(decoded)) 
 end
 
 local function url_escape(str)
@@ -15,7 +14,7 @@ local function url_escape(str)
     str = string.gsub(str, "([^%w%.%- ])", function(c)
         return string.format("%%%02X", string.byte(c))
     end)
-    str = string.gsub(str, " ", "+") -- Encode spaces as plus signs
+    str = string.gsub(str, " ", "+")
     return str
 end
 
@@ -50,5 +49,53 @@ function M.paste_coordinates(lat, lon)
     vim.api.nvim_buf_set_text(0, row-1, col, row-1, col, {coords})
     print("Inserted coordinates: " .. coords)
 end
+
+function M.vibe_geocode(query)
+	print("hi")
+end
+
+function M.vibe_reverse_geocode(query)
+	print("hi")
+end
+
+function M.random_coordinates(query)
+	print("hi")
+end
+
+function M.current_location(query)
+	print("hi")
+end
+
+function M.haversine_distance(query)
+	print("hi")
+end
+
+function M.distance(query)
+	print("hi")
+end
+
+function M.fun_fact(query)
+	print("hi")
+end
+
+function M.not_fun_fact(query)
+	print("hi")
+end
+
+function M.sign_up(query)
+	print("hi")
+end
+
+function M.log_in(query)
+	print("hi")
+end
+
+function M.get_lots_of_parking_lots(query)
+	print("hi")
+end
+
+-- Extra features:
+-- Progress bar for premium users
+
 
 return M

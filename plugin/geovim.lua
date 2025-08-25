@@ -1,44 +1,93 @@
--- plugin/geovim.lua
--- Load the main plugin module
 local geovim = require("geovim")
 
--- Subcommand: say hello
+local title = [[
+                          ,----..                                 ____  
+  ,----..       ,---,.   /   /   \                 ,---,        ,'  , `.
+ /   /   \    ,'  .' |  /   .     :        ,---.,`--.' |     ,-+-,.' _ |
+|   :     : ,---.'   | .   /   ;.  \      /__./||   :  :  ,-+-. ;   , ||
+.   |  ;. / |   |   .'.   ;   /  ` ; ,---.;  ; |:   |  ' ,--.'|'   |  ;|
+.   ; /--`  :   :  |-,;   |  ; \ ; |/___/ \  | ||   :  ||   |  ,', |  ':
+;   | ;  __ :   |  ;/||   :  | ; | '\   ;  \ ' |'   '  ;|   | /  | |  ||
+|   : |.' .'|   :   .'.   |  ' ' ' : \   \  \: ||   |  |'   | :  | :  |,
+.   | '_.' :|   |  |-,'   ;  \; /  |  ;   \  ' .'   :  ;;   . |  ; |--' 
+'   ; : \  |'   :  ;/| \   \  ',  /    \   \   '|   |  '|   : |  | ,    
+'   | '/  .'|   |    \  ;   :    /      \   `  ;'   :  ||   : '  |/     
+|   :    /  |   :   .'   \   \ .'        :   \ |;   |.' ;   | |`-'      
+ \   \ .'   |   | ,'      `---`           '---" '---'   |   ;/          
+  `---`     `----'                                      '---'                 
+]]
+
 vim.api.nvim_create_user_command(
     "GeoVimGetCoordinates",
     function()
-		-- Synchronous API call
-		local handle = io.popen('curl -s "https://api.github.com/repos/neovim/neovim"')
+		local handle = io.popen('curl -s "https://ipinfo.io/loc"')
 		local result = handle:read("*a")
 		handle:close()
 
-		print(result)  -- JSON response
+		print(result)
 
     end,
     { desc = "Say hello from GeoVim" }
 )
 
--- Subcommand: print a dummy coordinate
 vim.api.nvim_create_user_command(
     "GeoVimReverseGeoCode",
     function(opts)
         local lat = opts.fargs[1]
         local lon = opts.fargs[2]
-        print(geovim.reverse_geocode(lon, lat))
+        local result = geovim.reverse_geocode(lon, lat)
+		vim.fn.setreg('+', result)
+
     end,
     { 
         desc = "Insert a dummy coordinate at the cursor",
-        nargs = "+"  -- This tells Vim to expect exactly 2 arguments
+        nargs = "+"
     }
 )
 
+local function split_lines(str)
+    local t = {}
+    for line in str:gmatch("[^\r\n]+") do
+        table.insert(t, line)
+    end
+    return t
+end
+
+local function center_lines(lines, width)
+    local centered = {}
+    for _, line in ipairs(lines) do
+        local padding = math.floor((width - #line) / 2)
+        if padding < 0 then padding = 0 end
+        table.insert(centered, string.rep(" ", padding) .. line)
+    end
+    return centered
+end
+
 vim.api.nvim_create_user_command(
-    "GeovimGeocode",
-    function(opts)
-		local query = opts.args
-		local lon, lat = geovim.geocode(query)
-		print(lon)
-		print(lat)
-        -- geovim.geocode(geovim.geocode(query))
-    end,
-    { desc = "Insert a dummy coordinate at the cursor" }
+    "Geovimart",
+    function()
+        local lines = split_lines(title)
+        local win_width = vim.o.columns * 0.8
+        local win_height = #lines
+
+        local buf = vim.api.nvim_create_buf(false, true)
+
+        local opts = {
+            relative = "editor",
+            width = win_width,
+            height = win_height,
+            col = (vim.o.columns - win_width) / 2,
+            row = (vim.o.lines - win_height) / 2,
+            style = "minimal",
+            border = "rounded"
+        }
+
+		local win = vim.api.nvim_open_win(buf, true, opts)
+        local centered = center_lines(lines, win_width)
+        vim.api.nvim_buf_set_lines(buf, 0, -1, false, centered)
+
+	end,
+	{
+		desc = "debug"
+	}
 )
