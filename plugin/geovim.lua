@@ -22,10 +22,8 @@ vim.api.nvim_create_user_command(
     function()
 		local handle = io.popen('curl -s "https://ipinfo.io/loc"')
 		local result = handle:read("*a")
+		vim.fn.setreg('+', result)
 		handle:close()
-
-		print(result)
-
     end,
     { desc = "Say hello from GeoVim" }
 )
@@ -36,7 +34,7 @@ vim.api.nvim_create_user_command(
         local lat = opts.fargs[1]
         local lon = opts.fargs[2]
         local result = geovim.reverse_geocode(lon, lat)
-		vim.fn.setreg('+', result)
+		    vim.fn.setreg('+', result)
 
     end,
     { 
@@ -90,4 +88,13 @@ vim.api.nvim_create_user_command(
 	{
 		desc = "debug"
 	}
+)
+
+
+vim.api.nvim_create_user_command(
+    "GeoVimRandomCoordinates",
+    function()
+    geovim.random_coordinates()
+    end,
+    { desc = "Say hello from GeoVim" }
 )

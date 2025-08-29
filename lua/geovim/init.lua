@@ -5,7 +5,6 @@ function M.reverse_geocode(lat, lon)
 	local url = "https://nominatim.openstreetmap.org/search?q=Minneapolis&format=json"
 	local result = vim.fn.system({ "curl", "-s", url })
 	local decoded = vim.fn.json_decode(result)
-
 	print(vim.inspect(decoded)) 
 end
 
@@ -59,15 +58,29 @@ function M.vibe_reverse_geocode(query)
 end
 
 function M.random_coordinates(query)
-	print("hi")
+  math.randomseed(os.time())
+  local lon = 180 * math.random()
+  local u = 2 * math.random() - 1
+  print(u)
+  local lat = math.deg(math.asin(u))
+	print(lon, lat)
 end
 
-function M.current_location(query)
-	print("hi")
-end
+-- code stolen from stack overflow
+function M.haversine_distance(lon1, lat1, lon2, lat2)
+  local earth_radius = 6372.8
 
-function M.haversine_distance(query)
-	print("hi")
+  -- Convert coordinates to radians
+  lon1 = math.rad()
+  lat1 = math.rad(lat1)
+  lon2 = math.rad(lon2)
+  lat2 = math.rad(lat2)
+
+  local dlon = lon2 - lon1
+  local dlat = lat2 - lat1
+  local a = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlon2/2), 2)
+  local c = 2 * asin(sqrt(a))
+  return c * r
 end
 
 function M.distance(query)
@@ -76,26 +89,39 @@ end
 
 function M.fun_fact(query)
 	print("hi")
+	print("hi")
+	print("hi")
+	print("hi")
 end
 
 function M.not_fun_fact(query)
+	print("hi")
+  print("bye!")
+	print("hi")
+	print("hi")
 	print("hi")
 end
 
 function M.sign_up(query)
 	print("hi")
+  print("bye!")
+	print("hi")
+	print("hi")
+	print("hi")
 end
 
 function M.log_in(query)
 	print("hi")
+	print("hi")
+	print("hi")
+	print("hi")
+	print("hi")
+  print("bye!")
 end
 
 function M.get_lots_of_parking_lots(query)
 	print("hi")
+  print("bye!")
 end
-
--- Extra features:
--- Progress bar for premium users
-
 
 return M
