@@ -28,20 +28,20 @@ vim.api.nvim_create_user_command(
     { desc = "Say hello from GeoVim" }
 )
 
-vim.api.nvim_create_user_command(
-    "GeoVimReverseGeoCode",
-    function(opts)
-        local lat = opts.fargs[1]
-        local lon = opts.fargs[2]
-        local result = geovim.reverse_geocode(lon, lat)
-		    vim.fn.setreg('+', result)
+-- vim.api.nvim_create_user_command(
+--     "GeoVimReverseGeoCode",
+--     function(opts)
+--         local lat = opts.fargs[1]
+--         local lon = opts.fargs[2]
+--         local result = geovim.reverse_geocode(lon, lat)
+-- 		    vim.fn.setreg('+', result)
 
-    end,
-    { 
-        desc = "Insert a dummy coordinate at the cursor",
-        nargs = "+"
-    }
-)
+--     end,
+--     { 
+--         desc = "Insert a dummy coordinate at the cursor",
+--         nargs = "+"
+--     }
+-- )
 
 local function split_lines(str)
     local t = {}

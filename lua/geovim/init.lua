@@ -1,13 +1,4 @@
 local M = {}
-
--- Reverse geocode
-function M.reverse_geocode(lat, lon)
-	local url = "https://nominatim.openstreetmap.org/search?q=Minneapolis&format=json"
-	local result = vim.fn.system({ "curl", "-s", url })
-	local decoded = vim.fn.json_decode(result)
-	print(vim.inspect(decoded)) 
-end
-
 local function url_escape(str)
     if not str then return "" end
     str = string.gsub(str, "([^%w%.%- ])", function(c)
