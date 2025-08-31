@@ -62,7 +62,7 @@ local function center_lines(lines, width)
 end
 
 vim.api.nvim_create_user_command(
-    "Geovimart",
+    "GeoVimArt",
     function()
         local lines = split_lines(title)
         local win_width = vim.o.columns * 0.8
@@ -97,4 +97,37 @@ vim.api.nvim_create_user_command(
     geovim.random_coordinates()
     end,
     { desc = "Say hello from GeoVim" }
+)
+
+vim.api.nvim_create_user_command(
+    "GeoVimHaversine",
+    function(opts)
+        local lon1 = opts.fargs[1]
+        local lat1 = opts.fargs[2]
+        local lon2 = opts.fargs[3]
+        local lat2 = opts.fargs[4]
+        local result = geovim.haversine_distance(lon1, lat1, lon2, lat2)
+        vim.fn.setreg('+', result)
+    end,
+    { 
+        desc = "Say hello from GeoVim", 
+        nargs = '+' 
+    }
+)
+
+vim.api.nvim_create_user_command(
+    "GeoVimMidpoint",
+    function(opts)
+        local lat1 = opts.fargs[1]
+        local lon1 = opts.fargs[2]
+        local lat2 = opts.fargs[3]
+        local lon2 = opts.fargs[4]
+        local result = geovim.midpoint(lon1, lat1, lon2, lat2)
+        print(result)
+        vim.fn.setreg('+', result)
+    end,
+    { 
+        desc = "Say hello from GeoVim", 
+        nargs = '+' 
+    }
 )

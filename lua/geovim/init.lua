@@ -34,7 +34,6 @@ function M.reverse_geocode(lon, lat)
 	local result = vim.fn.system({ "curl", "-s", url })
 	local decoded = vim.fn.json_decode(result)
 
-
 	return decoded['display_name']
 end
 
@@ -71,20 +70,44 @@ function M.haversine_distance(lon1, lat1, lon2, lat2)
   local earth_radius = 6372.8
 
   -- Convert coordinates to radians
-  lon1 = math.rad()
+  lon1 = math.rad(lon1)
   lat1 = math.rad(lat1)
   lon2 = math.rad(lon2)
   lat2 = math.rad(lat2)
 
   local dlon = lon2 - lon1
   local dlat = lat2 - lat1
-  local a = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlon2/2), 2)
-  local c = 2 * asin(sqrt(a))
-  return c * r
+  local a = math.pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * math.pow(math.sin(dlon/2), 2)
+  local c = 2 * math.asin(math.sqrt(a))
+  return c * earth_radius
 end
 
-function M.distance(query)
-	print("hi")
+function M.midpoint(lon1, lat1, lon2, lat2)
+  -- Convert degrees to radians
+  lon1 = math.rad(lon1)
+  lat1 = math.rad(lat1)
+  lon2 = math.rad(lon2)
+  lat2 = math.rad(lat2)
+
+  -- Convert to cartesian coordinates
+  local x1 = math.cos(lat1) * math.cos(lon1)
+  local y1 = math.cos(lat1) * math.sin(lon1)
+  local z1 = math.sin(lat1)
+  local x2 = math.cos(lat2) * math.cos(lon2)
+  local y2 = math.cos(lat2) * math.sin(lon2)
+  local z2 = math.sin(lat2)
+
+  -- compute averages
+  local x_avg = (x1 + x2) / 2
+  local y_avg = (y1 + y2) / 2
+  local z_avg = (z1 + z2) / 2
+
+  -- convert averages to coordinates
+  local r = math.sqrt(x_avg * x_avg + y_avg * y_avg + z_avg * z_avg)
+  local lat_avg = math.deg(math.atan2(z_avg / r, math.sqrt((x_avg / r) * (x_avg / r) + (y_avg / r) * (y_avg / r))))
+  local lon_avg = math.deg(math.atan2(y_avg / r, x_avg / r))
+  print(lon_avg, lat_avg)
+  return string.format("%f, %f", lat_avg, lon_avg)
 end
 
 function M.fun_fact(query)
